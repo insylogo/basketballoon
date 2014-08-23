@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c2eventsheet>
+    <!--All the 'name' attributes are ignored by Construct 2 - they are there for readability only.-->
+    <name>Event sheet 1</name>
+    <events>
+        <comment>If the player is touching the screen, move towards the touch position.  Only move the player if they are further away from the touch than it is going to move - this avoids an unpleasent jittering when reaching the touch position.</comment>
+        <event-block sid="1543523116526253">
+            <conditions>
+                <condition id="2" name="Is in touch" sid="8017351523594505" type="Touch" />
+                <condition id="-8" name="Compare two values" sid="628349170953114" type="System">
+                    <param id="0" name="First value">distance(Player.X, Player.Y, Touch.X, Touch.Y)</param>
+                    <param id="1" name="Comparison">5</param>
+                    <param id="2" name="Second value">300 * dt</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-23" name="Move at angle" sid="5219317990196331" type="Player">
+                    <param id="0" name="Angle">angle(Self.X, Self.Y, Touch.X, Touch.Y)</param>
+                    <param id="1" name="Distance">300 * dt</param>
+                </action>
+            </actions>
+        </event-block>
+        <comment>Make a random enemy shoot every 1 second.</comment>
+        <event-block sid="6862273679522123">
+            <conditions>
+                <condition id="-6" name="Every X seconds" sid="2248969102532377" type="System">
+                    <param id="0" name="Interval (seconds)">1.0</param>
+                </condition>
+                <condition id="-16" name="Pick random instance" sid="3429002543942138" type="System">
+                    <param id="0" name="Object">Enemy</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="0" name="Spawn another object" sid="1686285241801149" type="Enemy">
+                    <param id="0" name="Object">EnemyBullet</param>
+                    <param id="1" name="Layer">&quot;Game&quot;</param>
+                    <param id="2" name="Image point">1</param>
+                </action>
+            </actions>
+        </event-block>
+        <comment>Every 2 seconds make a new enemy spawn at a random horizontal position at the top of the screen.</comment>
+        <event-block sid="5929976335952054">
+            <conditions>
+                <condition id="-6" name="Every X seconds" sid="8898471303241926" type="System">
+                    <param id="0" name="Interval (seconds)">2</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-3" name="Create object" sid="1493684617767445" type="System">
+                    <param id="0" name="Object to create">Enemy</param>
+                    <param id="1" name="Layer">&quot;Game&quot;</param>
+                    <param id="2" name="X">random(30, 450)</param>
+                    <param id="3" name="Y">-20</param>
+                </action>
+            </actions>
+        </event-block>
+        <comment>If any enemies are above the player, make the player automatically shoot 10 times a second.</comment>
+        <event-block sid="7174026566553577">
+            <conditions>
+                <condition id="-2" name="Compare Y" sid="2565568739347195" type="Enemy">
+                    <param id="0" name="Comparison">2</param>
+                    <param id="1" name="Y co-ordinate">Player.Y</param>
+                </condition>
+                <condition id="-6" name="Every X seconds" sid="4904523000233819" type="System">
+                    <param id="0" name="Interval (seconds)">0.1</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="0" name="Spawn another object" sid="482040283497123" type="Player">
+                    <param id="0" name="Object">Bullet</param>
+                    <param id="1" name="Layer">&quot;Game&quot;</param>
+                    <param id="2" name="Image point">1</param>
+                </action>
+            </actions>
+        </event-block>
+        <comment>If a player bullet hits an enemy, subtract 1 from their health.  If the enemy runs out of health, destroy it.</comment>
+        <event-block sid="1340994773000589">
+            <conditions>
+                <condition id="0" name="On collision with another object" sid="627261031121141" type="Bullet">
+                    <param id="0" name="Object">Enemy</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-12" name="Subtract from" sid="196342615677256" type="Enemy">
+                    <param id="0" name="Instance variable">Health</param>
+                    <param id="1" name="Value">1</param>
+                </action>
+                <action id="-9" name="Destroy" sid="9884183760800881" type="Bullet" />
+            </actions>
+        </event-block>
+        <event-block sid="414335740011199">
+            <conditions>
+                <condition id="-7" name="Compare instance variable" sid="5294908406685752" type="Enemy">
+                    <param id="0" name="Instance variable">Health</param>
+                    <param id="1" name="Comparison">3</param>
+                    <param id="2" name="Value">0</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="2344085256227924" type="Enemy" />
+            </actions>
+        </event-block>
+        <comment>If an enemy bullet hits the player, just destroy the bullet.  TODO: player health!</comment>
+        <event-block sid="3162947651821428">
+            <conditions>
+                <condition id="0" name="On collision with another object" sid="229019021402971" type="EnemyBullet">
+                    <param id="0" name="Object">Player</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="8170614910492468" type="EnemyBullet" />
+            </actions>
+        </event-block>
+        <comment>Destroy any enemies which make it to the bottom of the screen and leave the layout.</comment>
+        <event-block sid="4556033635829589">
+            <conditions>
+                <condition id="-2" name="Compare Y" sid="8293311436092725" type="Enemy">
+                    <param id="0" name="Comparison">5</param>
+                    <param id="1" name="Y co-ordinate">LayoutHeight</param>
+                </condition>
+                <condition id="-4" name="Is outside layout" sid="3907745380201565" type="Enemy" />
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="3205988792219275" type="Enemy" />
+            </actions>
+        </event-block>
+        <comment>Destroy the initial star object in the layout.</comment>
+        <event-block sid="8641348732370221">
+            <conditions>
+                <condition id="-2" name="On start of layout" sid="1926797633210043" type="System" />
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="7285237286614572" type="Star" />
+            </actions>
+        </event-block>
+        <comment>Create 50 random stars with different speeds and sizes on startup to create a space background effect.  The stars have a wrap behavior which keeps them on-screen.</comment>
+        <event-block sid="3937571808757985">
+            <conditions>
+                <condition id="-2" name="On start of layout" sid="8680613733778252" type="System" />
+                <condition id="-12" name="Repeat" sid="9864333146377977" type="System">
+                    <param id="0" name="Count">50</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-3" name="Create object" sid="3453178020903763" type="System">
+                    <param id="0" name="Object to create">Star</param>
+                    <param id="1" name="Layer">&quot;Background&quot;</param>
+                    <param id="2" name="X">random(LayoutWidth)</param>
+                    <param id="3" name="Y">random(LayoutHeight)</param>
+                </action>
+                <action behavior="Bullet" id="0" name="Set speed" sid="8131034406763603" type="Star">
+                    <param id="0" name="Speed">random(10, 80)</param>
+                </action>
+                <action id="9" name="Set scale" sid="2470512962244774" type="Star">
+                    <param id="0" name="Scale">Self.Bullet.Speed / 250</param>
+                </action>
+                <action id="-16" name="Set opacity" sid="5107907003979801" type="Star">
+                    <param id="0" name="Opacity">Self.Bullet.Speed</param>
+                </action>
+            </actions>
+        </event-block>
+    </events>
+</c2eventsheet>
